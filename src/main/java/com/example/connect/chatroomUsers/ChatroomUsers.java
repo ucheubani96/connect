@@ -21,7 +21,7 @@ public class ChatroomUsers {
     private Long user_id;
 
     @ManyToMany
-    @JoinTable(name = "chatroom_users_chatrooms",
+    @JoinTable(name = "chatroom_users_relation",
             joinColumns = @JoinColumn(name = "chatroom_users_id"),
             inverseJoinColumns = @JoinColumn(name = "chatrooms_id"))
     private List<Chatrooms> chatrooms = new ArrayList<>();
