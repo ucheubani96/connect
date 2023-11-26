@@ -1,6 +1,6 @@
 package com.example.connect.chatroomUsers;
 
-import com.example.connect.chatrooms.Chatrooms;
+import com.example.connect.chatrooms.Chatroom;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "chatroom_users")
-public class ChatroomUsers {
+public class ChatroomUser {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)
@@ -24,13 +24,13 @@ public class ChatroomUsers {
     @JoinTable(name = "chatroom_users_relation",
             joinColumns = @JoinColumn(name = "chatroom_users_id"),
             inverseJoinColumns = @JoinColumn(name = "chatrooms_id"))
-    private List<Chatrooms> chatrooms = new ArrayList<>();
+    private List<Chatroom> chatrooms = new ArrayList<>();
 
-    public List<Chatrooms> getChatrooms() {
+    public List<Chatroom> getChatrooms() {
         return chatrooms;
     }
 
-    public void setChatrooms(List<Chatrooms> chatrooms) {
+    public void setChatrooms(List<Chatroom> chatrooms) {
         this.chatrooms = chatrooms;
     }
 

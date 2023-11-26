@@ -1,6 +1,6 @@
 package com.example.connect.userVerification;
 
-import com.example.connect.user.LocalUser;
+import com.example.connect.user.User;
 import jakarta.persistence.*;
 
 @Entity
@@ -19,13 +19,13 @@ public class UserVerification {
 
     @OneToOne(orphanRemoval = true)
     @JoinColumn(name = "local_user", unique = true)
-    private LocalUser localUser;
+    private User localUser;
 
-    public LocalUser getLocalUser() {
+    public User getLocalUser() {
         return localUser;
     }
 
-    public void setLocalUser(LocalUser localUser) {
+    public void setLocalUser(User localUser) {
         this.localUser = localUser;
     }
 
