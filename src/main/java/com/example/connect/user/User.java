@@ -3,8 +3,8 @@ package com.example.connect.user;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "users")
-public class LocalUser {
+@Table(name = "local_users")
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)
