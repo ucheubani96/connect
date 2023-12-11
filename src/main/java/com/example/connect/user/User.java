@@ -1,5 +1,6 @@
 package com.example.connect.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -17,6 +18,7 @@ public class User {
     private String email;
 
     @Column(name = "password", nullable = false, length = 1000)
+    @JsonIgnore
     private String password;
 
     @Column(name = "dp")
