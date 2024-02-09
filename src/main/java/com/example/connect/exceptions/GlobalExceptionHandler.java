@@ -24,6 +24,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorObject, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(VerificationTokenNotCreated.class)
+    public ResponseEntity<ErrorObject> handleUserVerificationTokenNotCreated (VerificationTokenNotCreated e, WebRequest request) {
+        ErrorObject errorObject = new ErrorObject();
+
+        errorObject.setStatusCode(HttpStatus.CONFLICT.value());
+        errorObject.setMessage(e.getMessage());
+        errorObject.setTimeStamp(new Date());
+
+        return new ResponseEntity<>(errorObject, HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleRequestDataValidationException (MethodArgumentNotValidException e, WebRequest request) {
 
@@ -35,4 +46,6 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(errorMap, HttpStatus.BAD_REQUEST);
     }
+
+
 }

@@ -11,7 +11,7 @@ public class UserVerification {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "token", nullable = false, length = 10)
+    @Column(name = "token", nullable = false, length = 36)
     private String token;
 
     @Column(name = "user_id", nullable = false, unique = true)

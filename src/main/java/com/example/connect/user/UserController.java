@@ -24,12 +24,5 @@ public class UserController {
             User user = userService.createUser(userData);
 
             return responseHandler.respond(HttpStatus.CREATED, "User registered successfully", user);
-//            return ResponseEntity.status(HttpStatus.CREATED).body(user);
-    }
-
-    @GetMapping("/r")
-    public ResponseEntity<Object> getUser() {
-
-        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
