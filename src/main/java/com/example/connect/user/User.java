@@ -2,9 +2,13 @@ package com.example.connect.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "local_users")
+@Setter
+@Getter
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -24,39 +28,6 @@ public class User {
     @Column(name = "dp")
     private String dp;
 
-    public String getDp() {
-        return dp;
-    }
-
-    public void setDp(String dp) {
-        this.dp = dp;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public Long getId() {
-        return id;
-    }
+    @Column(name = "is_verified", nullable = false, columnDefinition = "boolean default false")
+    private boolean isVerified = false;
 }

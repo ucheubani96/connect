@@ -1,5 +1,7 @@
 package com.example.connect.exceptions;
 
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -28,11 +30,35 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorObject> handleUserVerificationTokenNotCreated (VerificationTokenNotCreated e, WebRequest request) {
         ErrorObject errorObject = new ErrorObject();
 
-        errorObject.setStatusCode(HttpStatus.CONFLICT.value());
+        errorObject.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
         errorObject.setMessage(e.getMessage());
         errorObject.setTimeStamp(new Date());
 
-        return new ResponseEntity<>(errorObject, HttpStatus.CONFLICT);
+        return new ResponseEntity<>(errorObject, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(InvalidVerificationToken.class)
+    public ResponseEntity<ErrorObject> handleInvalidVerificationToken (InvalidVerificationToken e, WebRequest request) {
+        ErrorObject errorObject = new ErrorObject();
+
+        errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        errorObject.setMessage(e.getMessage());
+        errorObject.setTimeStamp(new Date());
+
+        return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({JWTVerificationException.class, ExpiredJWT.class})
+    public ResponseEntity<ErrorObject> invalidJWT (RuntimeException e, WebRequest request) {
+        ErrorObject errorObject = new ErrorObject();
+
+        if (e.getClass() == ExpiredJWT.class) errorObject.setMessage(e.getMessage());
+        else errorObject.setMessage("Invalid token");
+
+        errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        errorObject.setTimeStamp(new Date());
+
+        return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

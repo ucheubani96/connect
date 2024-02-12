@@ -1,14 +1,16 @@
 package com.example.connect.user;
 
 import com.example.connect.encryption.EncryptionService;
+import com.example.connect.exceptions.EntityNotFound;
 import com.example.connect.exceptions.UserAlreadyExistException;
 import com.example.connect.user.dto.CreateUserDto;
 import com.example.connect.user.factory.UserFactory;
-import com.example.connect.userVerification.UserVerification;
 import com.example.connect.userVerification.UserVerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -32,11 +34,24 @@ public class UserService {
         userData.password = encryptionService.encryptPassword(userData.password);
         User user = userRepo.save(userFactory.createUsingRegisterDTO(userData));
 
-        UserVerification userVerification = userVerificationService.createVerificationToken(user);
+        String userVerification = userVerificationService.createVerificationToken(user.getId());
 
 //        SEND EMAIL TO USER
 
         return user;
+    }
+
+    public User verifyUser(String token) throws RuntimeException {
+
+        Long userId = userVerificationService.decodeVerificationToken(token);
+
+        Optional<User> user = userRepo.findById(userId);
+
+        if (user.isEmpty()) throw new EntityNotFound("User not found");
+
+        user.get().setVerified(true);
+
+        return userRepo.save(user.get());
     }
 
 }
