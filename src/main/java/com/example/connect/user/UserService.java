@@ -3,6 +3,7 @@ package com.example.connect.user;
 import com.example.connect.encryption.EncryptionService;
 import com.example.connect.exceptions.EntityNotFound;
 import com.example.connect.exceptions.UserAlreadyExistException;
+import com.example.connect.exceptions.UserNotVerified;
 import com.example.connect.user.dto.CreateUserDto;
 import com.example.connect.user.factory.UserFactory;
 import com.example.connect.userVerification.UserVerificationService;
@@ -52,6 +53,19 @@ public class UserService {
         user.get().setVerified(true);
 
         return userRepo.save(user.get());
+    }
+
+    public User findUserByEmail(String email) throws RuntimeException {
+
+        Optional<User> user = userRepo.findByEmailIgnoreCase(email);
+
+        if (user.isEmpty()) throw new EntityNotFound("User not found");
+
+        return user.get();
+    }
+
+    public void checkUserVerified (User user) throws RuntimeException {
+        if (!user.isVerified()) throw new UserNotVerified();
     }
 
 }

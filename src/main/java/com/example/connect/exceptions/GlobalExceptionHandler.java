@@ -1,6 +1,5 @@
 package com.example.connect.exceptions;
 
-import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,7 +48,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({JWTVerificationException.class, ExpiredJWT.class})
-    public ResponseEntity<ErrorObject> invalidJWT (RuntimeException e, WebRequest request) {
+    public ResponseEntity<ErrorObject> handleInvalidJWT (RuntimeException e, WebRequest request) {
         ErrorObject errorObject = new ErrorObject();
 
         if (e.getClass() == ExpiredJWT.class) errorObject.setMessage(e.getMessage());
@@ -59,6 +58,17 @@ public class GlobalExceptionHandler {
         errorObject.setTimeStamp(new Date());
 
         return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({InvalidCredentials.class, UserNotVerified.class})
+    public ResponseEntity<ErrorObject> handleInvalidCredentials (RuntimeException e, WebRequest request) {
+        ErrorObject errorObject = new ErrorObject();
+
+        errorObject.setStatusCode(HttpStatus.UNAUTHORIZED.value());
+        errorObject.setMessage(e.getMessage());
+        errorObject.setTimeStamp(new Date());
+
+        return new ResponseEntity<>(errorObject, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
