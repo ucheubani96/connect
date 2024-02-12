@@ -1,32 +1,29 @@
 package com.example.connect.userVerification;
 
-import com.example.connect.exceptions.VerificationTokenNotCreated;
-import com.example.connect.shared.RandomTokenGenerator;
-import com.example.connect.user.User;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.example.connect.encryption.JWTService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.security.SecureRandom;
-import java.util.UUID;
 
 @Service
 @Transactional
 public class UserVerificationService {
     @Autowired
-    private UserVerificationRepo userVerificationRepo;
+    private JWTService jwtService;
 
-    @Autowired
-    private RandomTokenGenerator randomTokenGenerator;
-    public UserVerification createVerificationToken (User user) throws RuntimeException {
+    public String createVerificationToken (Long userId) throws RuntimeException {
+        String token = jwtService.generateUserVerificationJWT(userId);
 
-        String token = UUID.randomUUID().toString();
-        if (userVerificationRepo.existsByToken(token)) throw new VerificationTokenNotCreated("Token already exist");
+        System.out.println(token);
 
-        UserVerification userVerification = new UserVerification();
-        userVerification.setUser_id(user.getId());
-        userVerification.setToken(token);
+        return token;
+    }
 
-        return userVerificationRepo.save(userVerification);
+    public Long decodeVerificationToken (String token) throws RuntimeException {
+
+        DecodedJWT decodedJWT = jwtService.decodeJwt(token);
+
+        return decodedJWT.getClaim("userId").asLong();
     }
 }
