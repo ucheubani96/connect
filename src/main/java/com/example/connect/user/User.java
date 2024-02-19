@@ -1,5 +1,6 @@
 package com.example.connect.user;
 
+import com.example.connect.shared.models.Auditable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,7 +10,7 @@ import lombok.Setter;
 @Table(name = "local_users")
 @Setter
 @Getter
-public class User {
+public class User extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)
@@ -30,4 +31,8 @@ public class User {
 
     @Column(name = "is_verified", nullable = false, columnDefinition = "boolean default false")
     private boolean isVerified = false;
+
+    public boolean comparePasswords (String oldPasswordHash, String newPasswordHash) {
+        return (oldPasswordHash.equals(newPasswordHash));
+    }
 }

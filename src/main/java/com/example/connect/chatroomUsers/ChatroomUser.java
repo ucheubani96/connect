@@ -1,6 +1,7 @@
 package com.example.connect.chatroomUsers;
 
 import com.example.connect.chatrooms.Chatroom;
+import com.example.connect.shared.models.Auditable;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "chatroom_users")
-public class ChatroomUser {
+public class ChatroomUser extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)

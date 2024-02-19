@@ -1,10 +1,11 @@
 package com.example.connect.connections;
 
+import com.example.connect.shared.models.Auditable;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "connections")
-public class Connections {
+public class Connections extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)

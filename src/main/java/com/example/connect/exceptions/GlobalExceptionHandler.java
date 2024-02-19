@@ -1,12 +1,14 @@
 package com.example.connect.exceptions;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -36,8 +38,41 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorObject, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(InvalidVerificationToken.class)
-    public ResponseEntity<ErrorObject> handleInvalidVerificationToken (InvalidVerificationToken e, WebRequest request) {
+    @ExceptionHandler(EntityNotFound.class)
+    public ResponseEntity<ErrorObject> handleEntityNotFound (EntityNotFound e, WebRequest request) {
+        ErrorObject errorObject = new ErrorObject();
+
+        errorObject.setStatusCode(HttpStatus.NOT_FOUND.value());
+        errorObject.setMessage(e.getMessage());
+        errorObject.setTimeStamp(new Date());
+
+        return new ResponseEntity<>(errorObject, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(EntityNotEqual.class)
+    public ResponseEntity<ErrorObject> handleEntityNotEqual (EntityNotFound e, WebRequest request) {
+        ErrorObject errorObject = new ErrorObject();
+
+        errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        errorObject.setMessage(e.getMessage());
+        errorObject.setTimeStamp(new Date());
+
+        return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({InvalidVerificationToken.class, InvalidToken.class, ExpiredToken.class})
+    public ResponseEntity<ErrorObject> handleInvalidOrExpiredToken (RuntimeException e, WebRequest request) {
+        ErrorObject errorObject = new ErrorObject();
+
+        errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        errorObject.setMessage(e.getMessage());
+        errorObject.setTimeStamp(new Date());
+
+        return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidEntity.class)
+    public ResponseEntity<ErrorObject> handleInvalidEntity (RuntimeException e, WebRequest request) {
         ErrorObject errorObject = new ErrorObject();
 
         errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
@@ -71,6 +106,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorObject, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler({MethodArgumentTypeMismatchException.class, ConstraintViolationException.class})
+    public ResponseEntity<ErrorObject> handleInvalidPathVariableType (MethodArgumentTypeMismatchException e, WebRequest request) {
+        ErrorObject errorObject = new ErrorObject();
+
+        errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        errorObject.setMessage(e.getMessage());
+        errorObject.setTimeStamp(new Date());
+
+        return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleRequestDataValidationException (MethodArgumentNotValidException e, WebRequest request) {
 
@@ -82,6 +128,5 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(errorMap, HttpStatus.BAD_REQUEST);
     }
-
 
 }

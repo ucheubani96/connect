@@ -28,21 +28,14 @@ public class UserService {
     @Autowired
     private UserFactory userFactory;
 
-    public User createUser(CreateUserDto userData) throws RuntimeException {
-        if (userRepo.existsByUsernameIgnoreCase(userData.username)) throw new UserAlreadyExistException("Username already Exist");
-        if (userRepo.existsByEmailIgnoreCase(userData.email)) throw new UserAlreadyExistException("Email already Exist");
+    public User create (CreateUserDto userData) throws RuntimeException {
 
         userData.password = encryptionService.encryptPassword(userData.password);
-        User user = userRepo.save(userFactory.createUsingRegisterDTO(userData));
 
-        String userVerification = userVerificationService.createVerificationToken(user.getId());
-
-//        SEND EMAIL TO USER
-
-        return user;
+        return userRepo.save(userFactory.createUsingRegisterDTO(userData));
     }
 
-    public User verifyUser(String token) throws RuntimeException {
+    public User verify (String token) throws RuntimeException {
 
         Long userId = userVerificationService.decodeVerificationToken(token);
 
@@ -55,7 +48,7 @@ public class UserService {
         return userRepo.save(user.get());
     }
 
-    public User findUserByEmail(String email) throws RuntimeException {
+    public User findByEmail (String email) throws RuntimeException {
 
         Optional<User> user = userRepo.findByEmailIgnoreCase(email);
 
@@ -64,8 +57,29 @@ public class UserService {
         return user.get();
     }
 
+    public User findUserById(Long id) throws RuntimeException {
+
+        Optional<User> user = userRepo.findById(id);
+
+        if (user.isEmpty()) throw new EntityNotFound("User not found");
+
+        return user.get();
+    }
+
+    public User save (User user) {
+        return userRepo.save(user);
+    }
+
     public void checkUserVerified (User user) throws RuntimeException {
         if (!user.isVerified()) throw new UserNotVerified();
+    }
+
+    public void checkUsernameUnique (String username) throws RuntimeException {
+        if (userRepo.existsByUsernameIgnoreCase(username)) throw new UserAlreadyExistException("Username already Exist");
+    }
+
+    public void checkEmailUnique (String email) throws RuntimeException {
+        if (userRepo.existsByEmailIgnoreCase(email)) throw new UserAlreadyExistException("Email already Exist");
     }
 
 }
