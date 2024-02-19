@@ -16,6 +16,7 @@ public class CreateUserDto {
     @NotNull
     @NotBlank
     public String email;
+
     @NotNull
     @NotBlank
     @Size(min=6, max=32)
